@@ -1,0 +1,14 @@
+[project]
+name = "event-listings"
+version = "0.1.0"
+description = "A web application for managing local events."
+requires-python = ">=3.10"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+
+[tool.pytest.ini_options]
+addopts = "--cov=. --cov-report=term-missing"
