@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: event-listings
+    runtime: python
+    plan: free
+    buildCommand: pip install -U pip && pip install --force-reinstall . && PYTHONPATH=src python manage.py collectstatic --noinput
+    startCommand: PYTHONPATH=src python manage.py migrate && PYTHONPATH=src gunicorn events_site.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com,localhost,127.0.0.1

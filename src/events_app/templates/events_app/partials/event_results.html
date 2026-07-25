@@ -1,0 +1,42 @@
+<div class="event-list">
+  {% for event in page_obj %}
+    <article class="event-item">
+      <div class="date-box">
+        <strong>{{ event.date|date:"M d" }}</strong>
+        <span>{{ event.date|date:"Y" }}</span>
+      </div>
+      <div>
+        <div class="meta">
+          <span>{{ event.category.name }}</span>
+          <span>{{ event.location }}</span>
+          <span>By {{ event.author.username }}</span>
+        </div>
+        <h3><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h3>
+        <p>{{ event.description|truncatewords:24 }}</p>
+        <a href="{{ event.get_absolute_url }}">View details</a>
+      </div>
+    </article>
+  {% empty %}
+    <p class="empty">No events match this view.</p>
+  {% endfor %}
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pagination" aria-label="Event pagination">
+    {% if page_obj.has_previous %}
+      <a
+        hx-get="{% url 'events:event_list_partial' %}?page={{ page_obj.previous_page_number }}"
+        hx-target="#event-results"
+        href="?page={{ page_obj.previous_page_number }}"
+      >Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a
+        hx-get="{% url 'events:event_list_partial' %}?page={{ page_obj.next_page_number }}"
+        hx-target="#event-results"
+        href="?page={{ page_obj.next_page_number }}"
+      >Next</a>
+    {% endif %}
+  </nav>
+{% endif %}

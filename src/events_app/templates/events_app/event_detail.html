@@ -1,0 +1,34 @@
+{% extends "events_app/base.html" %}
+
+{% block title %}{{ event.title }} | Event Listings{% endblock %}
+
+{% block content %}
+  <article class="detail">
+    <div class="meta">
+      <span>{{ event.category.name }}</span>
+      <span>{{ event.date|date:"Y-m-d" }}</span>
+      <span>{{ event.location }}</span>
+      <span>By {{ event.author.username }}</span>
+    </div>
+    <h1>{{ event.title }}</h1>
+    <p>{{ event.description|linebreaksbr }}</p>
+  </article>
+
+  <section class="bookmarks">
+    <h2>Bookmarks</h2>
+    <div id="bookmarks">
+      {% include "events_app/partials/bookmark_list.html" %}
+    </div>
+    <form
+      method="post"
+      action="{% url 'events:bookmark_create' event.id %}"
+      class="stacked-form"
+      hx-post="{% url 'events:bookmark_create' event.id %}"
+      hx-target="#bookmarks"
+    >
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="button" type="submit">Bookmark event</button>
+    </form>
+  </section>
+{% endblock %}

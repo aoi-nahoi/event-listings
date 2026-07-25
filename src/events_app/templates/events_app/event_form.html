@@ -1,0 +1,15 @@
+{% extends "events_app/base.html" %}
+
+{% block title %}New event | Event Listings{% endblock %}
+
+{% block content %}
+  <section class="form-shell">
+    <p class="subheading">Create</p>
+    <h1>New event</h1>
+    <form method="post" class="stacked-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="button" type="submit">Save event</button>
+    </form>
+  </section>
+{% endblock %}

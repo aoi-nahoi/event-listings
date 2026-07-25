@@ -1,0 +1,13 @@
+<ul class="bookmark-list">
+  {% for bookmark in event.bookmarks.all %}
+    <li>
+      <strong>{{ bookmark.attendee_name }}</strong>
+      <span>{{ bookmark.created_at|date:"Y-m-d H:i" }}</span>
+      {% if bookmark.note %}
+        <p>{{ bookmark.note }}</p>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No bookmarks yet.</li>
+  {% endfor %}
+</ul>
