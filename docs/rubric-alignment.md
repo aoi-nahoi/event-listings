@@ -3,7 +3,7 @@
 | Rubric item | Evidence in this project |
 | --- | --- |
 | Tools/AI setup | `AGENTS.md`, `.gitignore`, Ruff, pytest, uv |
-| Managerial practices | Ready for GitHub issues, linked commits, PR, and review evidence |
+| Managerial practices | GitHub Issues #1-#4, linked commits, PR, and review comments |
 | Database schema | `Category`, `OrganizerProfile`, `Event`, `Bookmark`, Django `User` |
 | Business logic/views | `services.py`, `selectors.py`, `views.py`, `forms.py` |
 | Use of templates | Complete HTML templates in `src/events_app/templates/` |

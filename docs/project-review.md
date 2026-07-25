@@ -29,6 +29,14 @@
 - `python3 -m uv run python manage.py check`
 - `python3 -m uv run pytest`
 
+## GitHub Evidence
+
+- Issue #1 reviews rubric coverage.
+- Issue #2 tracks code quality review.
+- Issue #3 tracks final demo and deployment evidence.
+- Issue #4 tracks simple UI and accessibility polish.
+- Pull request review comments should mention services, selectors, templates, HTMX, and deployment settings.
+
 ## Known Limitations
 
 - SQLite is used for the course demo.
