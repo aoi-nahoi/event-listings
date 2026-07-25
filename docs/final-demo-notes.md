@@ -24,3 +24,7 @@ python3 -m uv run ruff check .
 python3 -m uv run python manage.py check
 python3 -m uv run pytest
 ```
+
+## Deployment Note
+
+Use the repository `https://github.com/aoi-nahoi/event-listings` on Render. After deployment, add the Render URL and `/healthz/` URL to the submission text file.
