@@ -10,6 +10,16 @@ Event Listings is a Django + HTMX web application for the Web Engineering final 
 - Detail page with an HTMX bookmark form.
 - SQLite database for course demonstration.
 - WhiteNoise and Gunicorn configuration for Render deployment.
+- OpenSpec and agent setup files are included as project management evidence.
+
+## Development Environment
+
+- Python 3.11+
+- uv
+- Git and GitHub
+- Django
+- Ruff
+- pytest
 
 ## Setup
 
