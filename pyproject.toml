@@ -20,6 +20,9 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
+accounts = [
+    "templates/**/*.html",
+]
 events_app = [
     "templates/**/*.html",
     "static/**/*",
@@ -42,6 +45,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 DJANGO_SETTINGS_MODULE = "events_site.settings"
 
 [tool.coverage.run]

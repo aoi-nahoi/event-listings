@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from django.contrib.auth.models import User
-from django.db.models import Count, QuerySet
+from django.db.models import Count, Q, QuerySet
 
 from .models import Category, Event
 
@@ -18,13 +18,17 @@ class EventFilters:
 
 
 def published_events(filters: EventFilters | None = None) -> QuerySet[Event]:
-    events = Event.objects.select_related("author", "category").filter(
-        status=Event.Status.PUBLISHED
-    )
+    events = Event.objects.select_related(
+        "author", "author__organizer_profile", "category"
+    ).filter(status=Event.Status.PUBLISHED)
     if not filters:
         return events
     if filters.query:
-        events = events.filter(title__icontains=filters.query)
+        events = events.filter(
+            Q(title__icontains=filters.query)
+            | Q(description__icontains=filters.query)
+            | Q(location__icontains=filters.query)
+        )
     if filters.category_id:
         events = events.filter(category_id=filters.category_id)
     if filters.date_from:

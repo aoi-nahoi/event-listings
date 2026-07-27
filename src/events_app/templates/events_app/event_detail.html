@@ -8,27 +8,43 @@
       <span>{{ event.category.name }}</span>
       <span>{{ event.date|date:"Y-m-d" }}</span>
       <span>{{ event.location }}</span>
-      <span>By {{ event.author.username }}</span>
+      <span>By {{ organizer_name }}</span>
     </div>
     <h1>{{ event.title }}</h1>
     <p>{{ event.description|linebreaksbr }}</p>
+    {% if can_manage %}
+      <div class="actions">
+        <a class="button" href="{% url 'events:event_edit' event.id %}">Edit event</a>
+        <a class="button secondary" href="{% url 'events:event_delete' event.id %}">Delete event</a>
+      </div>
+    {% endif %}
   </article>
 
   <section class="bookmarks">
     <h2>Bookmarks</h2>
-    <div id="bookmarks">
+    <div id="bookmarks" aria-live="polite">
       {% include "events_app/partials/bookmark_list.html" %}
     </div>
-    <form
-      method="post"
-      action="{% url 'events:bookmark_create' event.id %}"
-      class="stacked-form"
-      hx-post="{% url 'events:bookmark_create' event.id %}"
-      hx-target="#bookmarks"
-    >
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button class="button" type="submit">Bookmark event</button>
-    </form>
+    {% if user.is_authenticated %}
+      <form
+        method="post"
+        action="{% url 'events:bookmark_create' event.id %}"
+        class="stacked-form"
+        hx-post="{% url 'events:bookmark_create' event.id %}"
+        hx-target="#bookmarks"
+        hx-swap="innerHTML"
+      >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="button" type="submit">Bookmark event</button>
+      </form>
+    {% else %}
+      <p>
+        <a href="{% url 'accounts:login' %}">Log in</a>
+        or
+        <a href="{% url 'accounts:register' %}">Register</a>
+        to bookmark this event.
+      </p>
+    {% endif %}
   </section>
 {% endblock %}

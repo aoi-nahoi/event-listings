@@ -1,0 +1,20 @@
+{% extends "events_app/base.html" %}
+
+{% block title %}Register | Event Listings{% endblock %}
+
+{% block content %}
+  <section class="form-shell">
+    <p class="subheading">Account</p>
+    <h1>Register</h1>
+    <p>Create an account with a unique username and password to start posting events.</p>
+    <form method="post" class="stacked-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="button" type="submit">Create account</button>
+    </form>
+    <p class="auth-switch">
+      Already registered?
+      <a href="{% url 'accounts:login' %}">Log in</a>
+    </p>
+  </section>
+{% endblock %}

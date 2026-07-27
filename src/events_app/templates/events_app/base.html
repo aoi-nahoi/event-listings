@@ -5,20 +5,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Event Listings{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Syne:wght@600;700&display=swap"
+      rel="stylesheet"
+    >
     <link rel="stylesheet" href="{% static 'events_app/styles.css' %}">
     <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   </head>
   <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
       <a class="brand" href="{% url 'events:event_list' %}">Event Listings</a>
       <nav aria-label="Main navigation">
         <a href="{% url 'events:event_list' %}">Events</a>
-        <a href="{% url 'events:event_create' %}">New event</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'events:event_create' %}">New event</a>
+          <span class="nav-user">Signed in as {{ user.username }}</span>
+          <form method="post" action="{% url 'accounts:logout' %}" class="nav-logout">
+            {% csrf_token %}
+            <button class="button secondary" type="submit">Log out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}">Log in</a>
+          <a href="{% url 'accounts:register' %}">Register</a>
+        {% endif %}
       </nav>
     </header>
-    <main class="page">
+    <main id="main-content" class="page">
       {% if messages %}
-        <div class="messages">
+        <div class="messages" role="status" aria-live="polite">
           {% for message in messages %}
             <p>{{ message }}</p>
           {% endfor %}

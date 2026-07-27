@@ -7,8 +7,10 @@ Event Listings is a Django + HTMX web application for the Web Engineering final 
 Main implementation:
 
 - `events_app` — event management, filters, templates, HTMX partials, and bookmarks
+- `accounts` — registration, login, and logout
 - `events_site` — Django project settings and root URL configuration
 - `openspec/` — project context and agentic setup evidence from the repository
+- `.cursor/skills/event-listings/` — Cursor skill for repository conventions
 
 ## Important Project Conventions
 
@@ -16,6 +18,7 @@ Main implementation:
 - Put business logic in `events_app/services.py`, not in views.
 - Put reusable queries in `events_app/selectors.py`.
 - Keep views thin and focused on request/response handling.
+- Require login for event create/edit/delete and bookmark create.
 - Keep tests updated when models, views, forms, or services change.
 - Use English for user-facing application text and project documentation.
 - Do not edit old migrations after they are committed.
@@ -34,3 +37,4 @@ Main implementation:
 
 - Use `docs/` for final project review and demo evidence.
 - Use `openspec/specs/*` as supporting repository documentation when reviewing project intent.
+- Use `docs/rubric-alignment.md` when checking grading coverage.

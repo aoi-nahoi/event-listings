@@ -22,8 +22,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_htmx",
+    "accounts",
     "events_app",
 ]
+
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "events:event_list"
+LOGOUT_REDIRECT_URL = "events:event_list"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

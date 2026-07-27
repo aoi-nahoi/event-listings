@@ -9,7 +9,14 @@
         <div class="meta">
           <span>{{ event.category.name }}</span>
           <span>{{ event.location }}</span>
-          <span>By {{ event.author.username }}</span>
+          <span>
+            By
+            {% if event.author.organizer_profile.display_name %}
+              {{ event.author.organizer_profile.display_name }}
+            {% else %}
+              {{ event.author.username }}
+            {% endif %}
+          </span>
         </div>
         <h3><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h3>
         <p>{{ event.description|truncatewords:24 }}</p>
@@ -25,17 +32,21 @@
   <nav class="pagination" aria-label="Event pagination">
     {% if page_obj.has_previous %}
       <a
-        hx-get="{% url 'events:event_list_partial' %}?page={{ page_obj.previous_page_number }}"
+        class="button secondary"
+        hx-get="{% url 'events:event_list' %}?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.previous_page_number }}"
         hx-target="#event-results"
-        href="?page={{ page_obj.previous_page_number }}"
+        hx-push-url="true"
+        href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.previous_page_number }}"
       >Previous</a>
     {% endif %}
     <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
       <a
-        hx-get="{% url 'events:event_list_partial' %}?page={{ page_obj.next_page_number }}"
+        class="button secondary"
+        hx-get="{% url 'events:event_list' %}?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.next_page_number }}"
         hx-target="#event-results"
-        href="?page={{ page_obj.next_page_number }}"
+        hx-push-url="true"
+        href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ page_obj.next_page_number }}"
       >Next</a>
     {% endif %}
   </nav>

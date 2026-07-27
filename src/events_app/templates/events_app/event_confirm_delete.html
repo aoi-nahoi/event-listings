@@ -1,0 +1,20 @@
+{% extends "events_app/base.html" %}
+
+{% block title %}Delete event | Event Listings{% endblock %}
+
+{% block content %}
+  <section class="form-shell">
+    <p class="subheading">Delete</p>
+    <h1>Delete this event?</h1>
+    <p>
+      You are about to delete <strong>{{ event.title }}</strong>
+      ({{ event.date|date:"Y-m-d" }}, {{ event.location }}).
+      This action cannot be undone.
+    </p>
+    <form method="post" class="stacked-form">
+      {% csrf_token %}
+      <button class="button" type="submit">Delete event</button>
+      <a class="button secondary" href="{% url 'events:event_detail' event.id %}">Cancel</a>
+    </form>
+  </section>
+{% endblock %}

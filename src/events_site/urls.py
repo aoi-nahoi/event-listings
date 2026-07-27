@@ -12,5 +12,6 @@ def healthz(_request):
 urlpatterns = [
     path("healthz/", healthz, name="healthz"),
     path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
     path("", include("events_app.urls")),
 ]

@@ -1,20 +1,18 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Tech stack: Django 5, django-htmx, SQLite (demo), WhiteNoise, Gunicorn, uv, Ruff, pytest.
+  Apps: events_app (events/bookmarks), accounts (register/login/logout), events_site (settings/urls).
+  Conventions: templates own HTML; services own writes; selectors own reads; thin views.
+  Domain: campus/local event listings with search, filters, CRUD, and bookmarks.
+  Auth: login required for event create/edit/delete and bookmark create; author/staff manage events.
+  Docs evidence lives in docs/ and openspec/specs/.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - Keep proposals under 500 words
+    - Include a Non-goals section
+  tasks:
+    - Break tasks into small, verifiable chunks
+  spec:
+    - Prefer concrete scenarios for browse, search, create, bookmark, and auth gates

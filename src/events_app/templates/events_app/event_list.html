@@ -5,12 +5,16 @@
 {% block content %}
   <section class="intro">
     <div>
-      <p class="subheading">Web Engineering final project</p>
-      <h1>Find local events</h1>
-      <p>Browse campus and local events, search by title, filter by category or date, and save events you want to remember.</p>
+      <p class="subheading">Campus and local discovery</p>
+      <h1>Event Listings</h1>
+      <p>Browse upcoming events, filter by category or date, and bookmark the ones worth attending after you sign in.</p>
     </div>
     <div class="actions">
-      <a class="button" href="{% url 'events:event_create' %}">New event</a>
+      {% if user.is_authenticated %}
+        <a class="button" href="{% url 'events:event_create' %}">New event</a>
+      {% else %}
+        <a class="button" href="{% url 'accounts:login' %}">Log in to create</a>
+      {% endif %}
       <form method="post" action="{% url 'events:seed_demo' %}">
         {% csrf_token %}
         <button class="button secondary" type="submit">Seed demo data</button>
@@ -18,7 +22,7 @@
     </div>
   </section>
 
-  <section class="summary">
+  <section class="summary" aria-label="Listing summary">
     <span>{{ total_events }} events</span>
     <span>{{ categories|length }} categories</span>
     <span>{{ organizers|length }} organizers</span>
@@ -30,12 +34,15 @@
       <h2>Search events</h2>
       <form
         method="get"
-        hx-get="{% url 'events:event_list_partial' %}"
+        hx-get="{% url 'events:event_list' %}"
         hx-target="#event-results"
         hx-trigger="keyup changed delay:250ms from:input, change from:select"
+        hx-indicator="#filter-status"
+        hx-push-url="true"
       >
         {{ form.as_p }}
         <button class="button secondary" type="submit">Apply</button>
+        <span id="filter-status" class="htmx-indicator" aria-live="polite">Updating…</span>
       </form>
     </aside>
 
@@ -44,7 +51,7 @@
         <h2>Upcoming events</h2>
         <span>{{ total_events }} matches</span>
       </div>
-      <div id="event-results">
+      <div id="event-results" aria-live="polite" aria-busy="false">
         {% include "events_app/partials/event_results.html" %}
       </div>
     </section>
