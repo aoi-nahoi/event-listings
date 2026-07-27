@@ -24,9 +24,9 @@ Event Listings is a Django + HTMX web application for the Web Engineering final 
 ## Setup
 
 ```bash
-python3 -m uv sync
-python3 -m uv run python manage.py migrate
-python3 -m uv run python manage.py runserver
+uv sync
+uv run python manage.py migrate
+uv run python manage.py runserver
 ```
 
 Open `http://127.0.0.1:8000/`.
