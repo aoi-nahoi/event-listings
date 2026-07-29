@@ -15,10 +15,10 @@ def create_event(
     category: Category,
     title: str,
     description: str,
-    poster,
     date: date,
     location: str,
     status: str,
+    poster=None,
 ) -> Event:
     return Event.objects.create(
         author=author,
@@ -39,10 +39,10 @@ def update_event(
     category: Category,
     title: str,
     description: str,
-    poster,
     date: date,
     location: str,
     status: str,
+    poster=None,
 ) -> Event:
     event.category = category
     event.title = title.strip()
