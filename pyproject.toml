@@ -44,7 +44,7 @@ target-version = "py311"
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
-"src/**/migrations/*.py" = ["I001"]
+"src/**/migrations/*.py" = ["I001", "E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -363,7 +363,7 @@ def test_password_change_updates_password(client):
 @pytest.mark.django_db
 @override_settings(MEDIA_ROOT="/tmp/event-listings-test-media")
 def test_event_create_view_accepts_poster_upload(client):
-    user = User.objects.create_user(username="sota", password="pass-12345")
+    User.objects.create_user(username="sota", password="pass-12345")
     category = Category.objects.create(name="Lecture", slug="lecture")
     client.login(username="sota", password="pass-12345")
     poster = SimpleUploadedFile("poster.png", b"fake-image-bytes", content_type="image/png")
