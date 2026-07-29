@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from django.contrib import admin
 
-from .models import Bookmark, Category, Event, OrganizerProfile
+from .models import Bookmark, Category, Event, Favorite, OrganizerProfile
 
 
 @admin.register(Category)
@@ -27,3 +27,9 @@ class EventAdmin(admin.ModelAdmin):
 class BookmarkAdmin(admin.ModelAdmin):
     list_display = ("event", "attendee_name", "created_at")
     search_fields = ("attendee_name", "note", "event__title")
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ("user", "event", "created_at")
+    search_fields = ("user__username", "event__title")

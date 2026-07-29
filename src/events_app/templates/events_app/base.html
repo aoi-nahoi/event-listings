@@ -21,6 +21,7 @@
       <nav aria-label="Main navigation">
         <a href="{% url 'events:event_list' %}">Events</a>
         {% if user.is_authenticated %}
+          <a href="{% url 'events:my_page' %}">My page</a>
           <a href="{% url 'events:event_create' %}">New event</a>
           <span class="nav-user">Signed in as {{ user.username }}</span>
           <form method="post" action="{% url 'accounts:logout' %}" class="nav-logout">

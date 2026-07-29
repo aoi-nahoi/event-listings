@@ -8,11 +8,13 @@ app_name = "events"
 
 urlpatterns = [
     path("", views.event_list_view, name="event_list"),
+    path("me/", views.my_page_view, name="my_page"),
     path("events/new/", views.event_create_view, name="event_create"),
     path("events/<int:event_id>/", views.event_detail_view, name="event_detail"),
     path("events/<int:event_id>/edit/", views.event_edit_view, name="event_edit"),
     path("events/<int:event_id>/delete/", views.event_delete_view, name="event_delete"),
     path("events/<int:event_id>/bookmarks/", views.bookmark_create_view, name="bookmark_create"),
+    path("events/<int:event_id>/favorite/", views.favorite_toggle_view, name="favorite_toggle"),
     path("seed-demo/", views.seed_demo_view, name="seed_demo"),
     path("partials/events/", views.event_list_partial, name="event_list_partial"),
 ]

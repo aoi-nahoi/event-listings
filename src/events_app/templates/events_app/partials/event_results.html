@@ -1,11 +1,18 @@
 <div class="event-list">
   {% for event in page_obj %}
-    <article class="event-item">
-      <div class="date-box">
-        <strong>{{ event.date|date:"M d" }}</strong>
-        <span>{{ event.date|date:"Y" }}</span>
+    <article class="event-item{% if event.poster %} has-poster{% endif %}">
+      <div class="event-date">
+        <div class="date-box">
+          <strong>{{ event.date|date:"M d" }}</strong>
+          <span>{{ event.date|date:"Y" }}</span>
+        </div>
       </div>
-      <div>
+      {% if event.poster %}
+        <div class="event-media">
+          <img class="event-poster" src="{{ event.poster.url }}" alt="{{ event.title }} poster">
+        </div>
+      {% endif %}
+      <div class="event-content">
         <div class="meta">
           <span>{{ event.category.name }}</span>
           <span>{{ event.location }}</span>

@@ -23,6 +23,11 @@ class EventForm(forms.Form):
             }
         )
     )
+    poster = forms.FileField(
+        required=False,
+        help_text="Optional poster image: jpg, png, webp, or gif.",
+        widget=forms.ClearableFileInput(attrs={"class": "field-input", "accept": "image/*"}),
+    )
     date = forms.DateField(widget=forms.DateInput(attrs={"type": "date", "class": "field-input"}))
     location = forms.CharField(
         max_length=160,

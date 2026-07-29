@@ -9,6 +9,7 @@ htmlcov/
 db.sqlite3
 *.sqlite3
 staticfiles/
+media/
 dist/
 build/
 *.egg-info/

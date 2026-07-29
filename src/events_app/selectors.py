@@ -44,3 +44,20 @@ def category_overview() -> QuerySet[Category]:
 
 def organizer_overview() -> QuerySet[User]:
     return User.objects.annotate(event_count=Count("events")).order_by("username")
+
+
+def authored_events_for_user(user: User) -> QuerySet[Event]:
+    return (
+        Event.objects.select_related("author", "author__organizer_profile", "category")
+        .filter(author=user)
+        .order_by("status", "date", "title")
+    )
+
+
+def favorite_events_for_user(user: User) -> QuerySet[Event]:
+    return (
+        Event.objects.select_related("author", "author__organizer_profile", "category")
+        .filter(favorited_by__user=user)
+        .filter(Q(status=Event.Status.PUBLISHED) | Q(author=user))
+        .distinct()
+    )

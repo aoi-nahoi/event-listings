@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
-from .forms import RegisterForm
+from .forms import AccountPasswordChangeForm, ProfileSettingsForm, RegisterForm
 
 
 def register_view(request: HttpRequest) -> HttpResponse:
@@ -30,3 +31,23 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     next_page = reverse_lazy("events:event_list")
+
+
+@login_required
+def account_settings_view(request: HttpRequest) -> HttpResponse:
+    form = ProfileSettingsForm(request.POST or None, user=request.user)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Profile updated.")
+        return redirect("events:my_page")
+    return render(request, "accounts/account_settings.html", {"form": form})
+
+
+class UserPasswordChangeView(PasswordChangeView):
+    form_class = AccountPasswordChangeForm
+    template_name = "accounts/password_change.html"
+    success_url = reverse_lazy("events:my_page")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Password updated.")
+        return super().form_valid(form)

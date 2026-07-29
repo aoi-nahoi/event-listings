@@ -1,0 +1,19 @@
+{% extends "events_app/base.html" %}
+
+{% block title %}Account settings | Event Listings{% endblock %}
+
+{% block content %}
+  <section class="form-shell">
+    <p class="subheading">Account</p>
+    <h1>Profile settings</h1>
+    <p>Update the public organizer name shown on your events, plus your account email.</p>
+    <form method="post" class="stacked-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="actions">
+        <button class="button" type="submit">Save profile</button>
+        <a class="button secondary" href="{% url 'events:my_page' %}">Back to My page</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "events_app/base.html" %}
+
+{% block title %}My page | Event Listings{% endblock %}
+
+{% block content %}
+  <section class="intro profile-intro">
+    <div>
+      <p class="subheading">Your workspace</p>
+      <h1>My page</h1>
+      <p>Manage your published events, keep drafts and cancelled events private, and revisit the events you saved as favorites.</p>
+    </div>
+    <div class="summary summary-compact" aria-label="My page summary">
+      <span>{{ published_events|length }} published</span>
+      <span>{{ draft_events|length }} drafts</span>
+      <span>{{ cancelled_events|length }} cancelled</span>
+      <span>{{ favorite_events|length }} favorites</span>
+    </div>
+  </section>
+
+  <section class="profile-card">
+    <div>
+      <p class="subheading">Profile</p>
+      <h2>{{ profile.display_name|default:user.username }}</h2>
+      <p class="profile-copy">@{{ user.username }}</p>
+      <p class="profile-copy">{{ user.email|default:"No account email set yet." }}</p>
+      <p class="profile-copy">
+        Organizer contact:
+        {{ profile.contact_email|default:"Not set" }}
+      </p>
+      <p class="profile-bio">
+        {{ profile.bio|default:"Add a short bio so visitors know what kind of events you organize." }}
+      </p>
+    </div>
+    <div class="actions">
+      <a class="button" href="{% url 'accounts:settings' %}">Edit profile</a>
+      <a class="button secondary" href="{% url 'accounts:password_change' %}">Change password</a>
+    </div>
+  </section>
+
+  <section class="profile-grid">
+    <div class="profile-section">
+      <div class="panel-title">
+        <h2>My published events</h2>
+        <span>{{ published_events|length }}</span>
+      </div>
+      {% include "events_app/partials/user_event_list.html" with events=published_events empty_message="You have not published any events yet." %}
+    </div>
+
+    <div class="profile-section">
+      <div class="panel-title">
+        <h2>Drafts</h2>
+        <span>{{ draft_events|length }}</span>
+      </div>
+      {% include "events_app/partials/user_event_list.html" with events=draft_events empty_message="No drafts yet." %}
+    </div>
+
+    <div class="profile-section">
+      <div class="panel-title">
+        <h2>Cancelled events</h2>
+        <span>{{ cancelled_events|length }}</span>
+      </div>
+      {% include "events_app/partials/user_event_list.html" with events=cancelled_events empty_message="No cancelled events." %}
+    </div>
+
+    <div class="profile-section">
+      <div class="panel-title">
+        <h2>Favorite events</h2>
+        <span>{{ favorite_events|length }}</span>
+      </div>
+      {% include "events_app/partials/user_event_list.html" with events=favorite_events empty_message="You have not saved any favorite events yet." %}
+    </div>
+  </section>
+{% endblock %}

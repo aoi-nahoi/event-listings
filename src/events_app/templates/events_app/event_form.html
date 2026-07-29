@@ -6,8 +6,12 @@
   <section class="form-shell">
     <p class="subheading">{% if mode == "edit" %}Edit{% else %}Create{% endif %}</p>
     <h1>{% if mode == "edit" %}Edit event{% else %}New event{% endif %}</h1>
-    <form method="post" class="stacked-form">
+    <form method="post" enctype="multipart/form-data" class="stacked-form">
       {% csrf_token %}
+      {% if mode == "edit" and event.poster %}
+        <p class="profile-copy">Current poster:</p>
+        <img class="form-poster-preview" src="{{ event.poster.url }}" alt="{{ event.title }} poster">
+      {% endif %}
       {{ form.as_p }}
       <button class="button" type="submit">
         {% if mode == "edit" %}Save changes{% else %}Save event{% endif %}

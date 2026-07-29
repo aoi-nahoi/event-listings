@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from django.contrib.auth.models import User
 from django.db import transaction
 
-from .models import Bookmark, Category, Event, OrganizerProfile
+from .models import Bookmark, Category, Event, Favorite, OrganizerProfile
 
 
 @transaction.atomic
@@ -15,6 +15,7 @@ def create_event(
     category: Category,
     title: str,
     description: str,
+    poster,
     date: date,
     location: str,
     status: str,
@@ -24,6 +25,7 @@ def create_event(
         category=category,
         title=title.strip(),
         description=description.strip(),
+        poster=poster,
         date=date,
         location=location.strip(),
         status=status,
@@ -37,6 +39,7 @@ def update_event(
     category: Category,
     title: str,
     description: str,
+    poster,
     date: date,
     location: str,
     status: str,
@@ -44,6 +47,8 @@ def update_event(
     event.category = category
     event.title = title.strip()
     event.description = description.strip()
+    if poster is not None:
+        event.poster = poster
     event.date = date
     event.location = location.strip()
     event.status = status
@@ -63,6 +68,16 @@ def create_bookmark(*, event: Event, attendee_name: str, note: str = "") -> Book
         attendee_name=attendee_name.strip(),
         note=note.strip(),
     )
+
+
+@transaction.atomic
+def toggle_favorite(*, user: User, event: Event) -> bool:
+    favorite = Favorite.objects.filter(user=user, event=event).first()
+    if favorite is not None:
+        favorite.delete()
+        return False
+    Favorite.objects.create(user=user, event=event)
+    return True
 
 
 @transaction.atomic
