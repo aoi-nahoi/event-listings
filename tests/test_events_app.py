@@ -127,6 +127,78 @@ def test_seed_demo_content_is_idempotent():
     assert OrganizerProfile.objects.count() == 3
     assert User.objects.get(username="sota").check_password("demo-pass-123")
     assert OrganizerProfile.objects.get(user__username="sota").display_name == "Sota Sato"
+    assert all(event.category_id for event in Event.objects.all())
+
+
+@pytest.mark.django_db
+def test_seed_demo_content_works_when_a_user_already_exists():
+    User.objects.create_user(username="early-user", password="pass-12345")
+
+    seed_demo_content()
+    seed_demo_content()
+
+    assert Category.objects.count() == 5
+    assert Event.objects.count() == 10
+    assert User.objects.filter(username="sota").exists()
+    assert User.objects.count() == 4
+    assert set(Category.objects.values_list("name", flat=True)) == {
+        "Lecture",
+        "Concert",
+        "Workshop",
+        "Sports",
+        "Meetup",
+    }
+    assert Event.objects.filter(category__slug="lecture").exists()
+
+
+@pytest.mark.django_db
+def test_event_create_form_shows_categories(client):
+    User.objects.create_user(username="sota", password="pass-12345")
+    Category.objects.create(name="Lecture", slug="lecture")
+    Category.objects.create(name="Workshop", slug="workshop")
+    client.login(username="sota", password="pass-12345")
+
+    response = client.get(reverse("events:event_create"))
+
+    assert response.status_code == 200
+    body = response.content.decode()
+    assert 'name="category"' in body
+    assert "Lecture" in body
+    assert "Workshop" in body
+
+
+@pytest.mark.django_db
+def test_event_create_form_shows_empty_category_guidance(client):
+    User.objects.create_user(username="sota", password="pass-12345")
+    client.login(username="sota", password="pass-12345")
+
+    response = client.get(reverse("events:event_create"))
+
+    assert response.status_code == 200
+    assert "No categories are available yet" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_event_create_requires_category(client):
+    user = User.objects.create_user(username="sota", password="pass-12345")
+    Category.objects.create(name="Lecture", slug="lecture")
+    client.login(username="sota", password="pass-12345")
+
+    response = client.post(
+        reverse("events:event_create"),
+        {
+            "category": "",
+            "title": "Django lecture",
+            "description": "Intro session",
+            "date": "2026-08-01",
+            "location": "Room M1",
+            "status": Event.Status.PUBLISHED,
+        },
+    )
+
+    assert response.status_code == 200
+    assert not Event.objects.filter(author=user).exists()
+    assert "This field is required" in response.content.decode()
 
 
 @pytest.mark.django_db

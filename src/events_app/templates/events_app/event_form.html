@@ -6,6 +6,12 @@
   <section class="form-shell">
     <p class="subheading">{% if mode == "edit" %}Edit{% else %}Create{% endif %}</p>
     <h1>{% if mode == "edit" %}Edit event{% else %}New event{% endif %}</h1>
+    {% if not form.fields.category.queryset.exists %}
+      <p class="profile-copy">
+        No categories are available yet. Open the home page and click
+        <strong>Seed demo data</strong> to create the default categories, then try again.
+      </p>
+    {% endif %}
     <form method="post" enctype="multipart/form-data" class="stacked-form">
       {% csrf_token %}
       {% if mode == "edit" and event.poster %}
