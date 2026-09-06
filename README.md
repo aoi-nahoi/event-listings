@@ -1,28 +1,65 @@
 # Event Listings
 
-Event Listings is a Django + HTMX web application for the Web Engineering final project. Visitors can browse, search, and filter local events. Registered users can create, edit, delete, and bookmark events.
+Django + HTMX で作ったローカルイベント一覧アプリです。イベントの閲覧・検索・フィルタ、作成・編集・削除、ブックマーク、お気に入りができます。
 
-## Features
+## RenderデプロイURL
+https://event-listings.onrender.com
 
-- Event list with title, date, location, category, and organizer profile name
-- Async search and filters with HTMX (`hx-push-url`, live results, accessible status updates)
-- Account registration, login, and logout
-- Authenticated event create / edit / delete (author or staff)
-- Authenticated bookmark create with partial page updates
-- SQLite database for course demonstration
-- WhiteNoise + Gunicorn + `render.yaml` for Render deployment
-- OpenSpec, AGENTS.md, Cursor skills, and GitHub templates as project-management evidence
+## アプリ構成
 
-## Development Environment
+| アプリ | 役割 |
+| --- | --- |
+| `events_app` | イベント管理、検索・フィルタ、HTMX 部分更新、ブックマーク / お気に入り、デモデータ投入 |
+| `accounts` | 会員登録、ログイン / ログアウト、プロフィール設定、パスワード変更 |
+| `events_site` | Django プロジェクト設定、ルート URL、ヘルスチェック |
 
-- Python 3.11+
-- uv
-- Git and GitHub
-- Django 5
-- Ruff / Pylint config
-- pytest
+補助ディレクトリ:
 
-## Setup
+- `tests/` — pytest
+- `docs/` — 採点・デモ用メモ
+- `openspec/` — 仕様・プロジェクト文脈
+
+## 機能概要
+
+### events_app
+
+- 公開イベント一覧（タイトル、日付、場所、カテゴリ、主催者名）
+- キーワード検索、カテゴリ / 日付フィルタ（HTMX で結果を部分更新）
+- イベント作成・編集・削除（ログイン必須、作者または staff）
+- 詳細ページでのブックマーク追加（HTMX）
+- お気に入りの追加 / 解除
+- マイページ（自分のイベント、下書き、お気に入り）
+- デモデータ投入（`/seed-demo/`、何度実行しても重複しない）
+
+### accounts
+
+- ユーザー登録・ログイン・ログアウト
+- プロフィール設定（表示名など）
+- パスワード変更
+
+### events_site
+
+- 設定・静的ファイル / メディア配信
+- `/healthz/` ヘルスチェック
+- `/admin/` Django 管理画面
+
+## データモデル
+
+- `User` — 認証・イベント作者
+- `Category` — イベント分類（Lecture, Concert など）
+- `OrganizerProfile` — 主催者の表示名 / 連絡先
+- `Event` — タイトル、説明、日付、場所、カテゴリ、作者、状態、ポスター画像
+- `Bookmark` — イベントへのブックマーク（名前・メモ）
+- `Favorite` — ユーザーごとのお気に入り
+
+## アーキテクチャ
+
+- UI は Django テンプレート
+- 書き込みは `events_app/services.py`
+- 読み取りクエリは `events_app/selectors.py`
+- `views.py` はリクエスト / レスポンス処理に限定
+
+## セットアップ
 
 ```bash
 uv sync
@@ -30,11 +67,33 @@ uv run python manage.py migrate
 uv run python manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`.
+`http://127.0.0.1:8000/` を開きます。
 
-Demo accounts after seeding: `sota` / `mika` / `ren` with password `demo-pass-123`.
+ホームの **Seed demo data** でデモデータを投入できます。  
+デモアカウント: `sota` / `mika` / `ren`（パスワードはいずれも `demo-pass-123`）
 
-## Useful Commands
+## 主なルート
+
+| URL | 内容 |
+| --- | --- |
+| `/` | イベント一覧・検索・フィルタ |
+| `/me/` | マイページ |
+| `/events/new/` | イベント作成 |
+| `/events/<id>/` | 詳細・ブックマーク |
+| `/events/<id>/edit/` | 編集 |
+| `/events/<id>/delete/` | 削除 |
+| `/events/<id>/favorite/` | お気に入り切替 |
+| `/partials/events/` | HTMX 用一覧 partial |
+| `/seed-demo/` | デモデータ投入 |
+| `/accounts/register/` | 会員登録 |
+| `/accounts/login/` | ログイン |
+| `/accounts/logout/` | ログアウト |
+| `/accounts/settings/` | プロフィール設定 |
+| `/accounts/password/change/` | パスワード変更 |
+| `/healthz/` | ヘルスチェック |
+| `/admin/` | 管理画面 |
+
+## 開発コマンド
 
 ```bash
 python3 -m uv run ruff check .
@@ -43,67 +102,12 @@ python3 -m uv run pytest
 python3 -m uv run python manage.py collectstatic --noinput
 ```
 
-## Routes
+## デプロイ
 
-| URL | Name | Purpose |
-| --- | --- | --- |
-| `/` | `events:event_list` | Browse, search, and filter events |
-| `/accounts/register/` | `accounts:register` | Create an account |
-| `/accounts/login/` | `accounts:login` | Log in |
-| `/accounts/logout/` | `accounts:logout` | Log out |
-| `/events/new/` | `events:event_create` | Create a new event (login required) |
-| `/events/<id>/` | `events:event_detail` | Event details and bookmarks |
-| `/events/<id>/edit/` | `events:event_edit` | Edit event (author/staff) |
-| `/events/<id>/delete/` | `events:event_delete` | Delete event (author/staff) |
-| `/events/<id>/bookmarks/` | `events:bookmark_create` | Bookmark action (login required) |
-| `/partials/events/` | `events:event_list_partial` | HTMX event list partial |
-| `/seed-demo/` | `events:seed_demo` | Create demo categories, users, and events |
-| `/healthz/` | health check | Deployment health check |
-
-## Data Model
-
-- Django `User`: account used for authorship and login
-- `Category`: Lecture, Concert, Workshop, Sports, Meetup, and more
-- `OrganizerProfile`: display name and contact email for organizers
-- `Event`: title, description, date, location, category, author, status
-- `Bookmark`: attendee name and note linked to an event
-
-## Architecture Notes
-
-- Templates own the HTML layout
-- `events_app/services.py` owns writes
-- `events_app/selectors.py` owns reusable reads
-- Views stay thin and handle request/response only
-
-## Deployment
-
-### Render (recommended)
-
-Render can deploy this project as a Python web service using `render.yaml`.
-
-Build command:
+Render（`render.yaml`）または Docker に対応しています。
 
 ```bash
-pip install -U pip && pip install --force-reinstall . && PYTHONPATH=src python manage.py collectstatic --noinput
-```
-
-Start command:
-
-```bash
-PYTHONPATH=src python manage.py migrate && PYTHONPATH=src gunicorn events_site.wsgi:application --bind 0.0.0.0:$PORT
-```
-
-Environment variables:
-
-- `DJANGO_DEBUG=0`
-- `DJANGO_SECRET_KEY` (required in production)
-- `DJANGO_ALLOWED_HOSTS=.onrender.com,localhost,127.0.0.1`
-
-After deploy, verify `https://<your-service>.onrender.com/healthz/`.
-
-### Docker (optional local/prod-like run)
-
-```bash
+# Docker 例
 docker build -t event-listings .
 docker run --rm -p 8000:8000 \
   -e DJANGO_DEBUG=0 \
@@ -112,10 +116,13 @@ docker run --rm -p 8000:8000 \
   event-listings
 ```
 
-## Documentation
+本番では `DJANGO_SECRET_KEY` と `DJANGO_ALLOWED_HOSTS` を設定し、デプロイ後に `/healthz/` を確認してください。
 
-- Rubric mapping: `docs/rubric-alignment.md`
-- Review evidence: `docs/project-review.md`
-- Demo script: `docs/final-demo-notes.md`
-- Specs: `openspec/specs/`
-- Contributing / review flow: `CONTRIBUTING.md`
+## 関連ドキュメント
+
+- `docs/rubric-alignment.md` — 採点観点との対応
+- `docs/project-review.md` — レビュー用まとめ
+- `docs/final-demo-notes.md` — デモ手順
+- `openspec/specs/` — 仕様
+- `CONTRIBUTING.md` — 貢献・レビュー手順
+- `AGENTS.md` — エージェント向け規約
